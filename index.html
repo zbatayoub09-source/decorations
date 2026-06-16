@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CNC STORE</title>
+
+<style>
+
+body{
+  font-family:Arial;
+  margin:0;
+  background:#f4f4f4;
+}
+
+header{
+  background:#111;
+  color:white;
+  text-align:center;
+  padding:20px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+  padding:20px;
+}
+
+.card{
+  background:white;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.card img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  cursor:pointer;
+}
+
+.content{
+  padding:15px;
+  text-align:center;
+}
+
+.btn{
+  display:block;
+  background:#25D366;
+  color:white;
+  padding:10px;
+  text-decoration:none;
+  border-radius:8px;
+  margin-top:10px;
+  font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+  <header>
+Moroccan Floral CNC Collection
+</header>
+
+<div class="grid" id="products"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<script>
+
+const whatsappNumber = "212622765085"; // بدلو برقمك
+
+fetch("products.csv")
+.then(response => response.text())
+.then(csv => {
+
+  const data = Papa.parse(csv,{
+    header:true,
+    skipEmptyLines:true
+  }).data;
+
+  let html = "";
+
+  data.forEach(p => {
+
+    if(!p.Title || !p.Image) return;
+
+    let productLink = p.Image;
+
+    let message = encodeURIComponent(
+      "Hello, I want this design:\n\n" +
+      p.Title +
+      "\n\nImage Link:\n" +
+      productLink
+    );
+
+    html += `
+
+    <div class="card">
+
+      <img src="${p.Image}"
+      onclick="window.open('${p.Image}')"
+      onerror="this.src='https://via.placeholder.com/300'">
+
+      <div class="content">
+
+        <h3>${p.Title}</h3>
+
+        <a class="btn"
+        href="https://wa.me/${whatsappNumber}?text=${message}"
+        target="_blank">
+
+        📩 Order WhatsApp
+
+        </a>
+
+      </div>
+
+    </div>
+
+    `;
+
+  });
+
+  document.getElementById("products").innerHTML = html;
+
+});
+
+</script>
+
+</body>
+</html>
+```
